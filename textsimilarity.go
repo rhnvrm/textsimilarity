@@ -74,8 +74,8 @@ func Similarity(a, b string) (float64, error) {
 	vectorA := make([]float64, len(corpus))
 	vectorB := make([]float64, len(corpus))
 	for k, v := range corpus {
-		vectorA[k] = float64(count(v, tokensA))
-		vectorB[k] = float64(count(v, tokensB))
+		vectorA[k] = float64(count(v, tokensA)) / float64(len(vectorA))
+		vectorB[k] = float64(count(v, tokensB)) / float64(len(vectorA))
 	}
 
 	similarity, err := Cosine(vectorA, vectorB)
