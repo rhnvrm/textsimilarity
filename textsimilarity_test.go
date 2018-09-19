@@ -13,7 +13,7 @@ func TestSimilarity(t *testing.T) {
 		result, _ := Similarity(docA, docB)
 
 		if result != 1.0 {
-			t.Errorf("Similarity() did not return 1")
+			t.Errorf("Similarity() did not return 1, got = %v", result)
 		}
 	})
 
