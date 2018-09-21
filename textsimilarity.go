@@ -2,12 +2,11 @@ package textsimilarity
 
 import (
 	"errors"
-	"log"
 	"math"
 	"strings"
-
-	prose "gopkg.in/jdkato/prose.v2"
 )
+
+var ()
 
 type TextSimilarity struct {
 	corpus            []string
@@ -46,25 +45,20 @@ func Cosine(a, b []float64) (float64, error) {
 	return sumA / (math.Sqrt(s1) * math.Sqrt(s2)), nil
 }
 
-// Tokenize uses Prose Tokenizer along with our custom stopword
+// Tokenize uses Naive splitting along with our custom stopword
 // filtering to return a list of tokens.
 func Tokenize(s string) []string {
-	tokens := []string{}
-	doc, err := prose.NewDocument(strings.ToLower(s))
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Iterate over the doc's tokens:
-	for _, tok := range doc.Tokens() {
+	tokens := []string{}
+	for _, tok := range strings.Split(strings.ToLower(s), " ") {
 		var exclude = false
 		for _, v := range stopbytes {
-			if string(v) == tok.Text {
+			if string(v) == tok {
 				exclude = true
 			}
 		}
 		if exclude == false {
-			tokens = append(tokens, tok.Text)
+			tokens = append(tokens, tok)
 		}
 	}
 	return tokens
