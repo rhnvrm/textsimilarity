@@ -2,9 +2,17 @@ package textsimilarity
 
 import (
 	"errors"
+	"log"
 	"math"
 	"strings"
+
+	prose "gopkg.in/jdkato/prose.v2"
 )
+
+type TextSimilarity struct {
+	corpus            []string
+	documentFrequency map[string]int
+}
 
 // Cosine returns the Cosine Similarity between two vectors.
 func Cosine(a, b []float64) (float64, error) {
@@ -38,9 +46,28 @@ func Cosine(a, b []float64) (float64, error) {
 	return sumA / (math.Sqrt(s1) * math.Sqrt(s2)), nil
 }
 
-// Tokenize is a naive implementation that currently only splits by spaces.
+// Tokenize uses Prose Tokenizer along with our custom stopword
+// filtering to return a list of tokens.
 func Tokenize(s string) []string {
-	return strings.Split(strings.ToLower(s), " ")
+	tokens := []string{}
+	doc, err := prose.NewDocument(strings.ToLower(s))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Iterate over the doc's tokens:
+	for _, tok := range doc.Tokens() {
+		var exclude = false
+		for _, v := range stopbytes {
+			if string(v) == tok.Text {
+				exclude = true
+			}
+		}
+		if exclude == false {
+			tokens = append(tokens, tok.Text)
+		}
+	}
+	return tokens
 }
 
 func count(key string, a []string) int {
@@ -53,29 +80,50 @@ func count(key string, a []string) int {
 	return count
 }
 
-// Similarity returns the cosine similarity between two documents.
-func Similarity(a, b string) (float64, error) {
-	var corpus []string
+func tfidf(v string, tokens []string, n int, documentFrequency map[string]int) float64 {
+	tf := float64(count(v, tokens))
+	idf := math.Log(float64(n) / (float64(documentFrequency[v] + 1)))
+	return tf * idf
+}
 
-	tokensA := Tokenize(a)
-	tokensB := Tokenize(b)
-	allTokens := append(tokensA, tokensB...)
-	encountered := map[string]bool{}
+// New accepts a slice of documents and
+// creates the internal corpus and document frequency mapping.
+func New(documents []string) *TextSimilarity {
+	var (
+		allTokens []string
+		ts        TextSimilarity
+	)
 
+	ts.documentFrequency = map[string]int{}
+
+	for _, doc := range documents {
+		allTokens = append(allTokens, Tokenize(doc)...)
+	}
 	// Generate a corpus.
 	for _, t := range allTokens {
-		if encountered[t] != true {
-			encountered[t] = true
-			corpus = append(corpus, t)
+		if ts.documentFrequency[t] == 0 {
+			ts.documentFrequency[t] = 1
+			ts.corpus = append(ts.corpus, t)
+		} else {
+			ts.documentFrequency[t] = ts.documentFrequency[t] + 1
 		}
 	}
 
+	return &ts
+}
+
+// Similarity returns the cosine similarity between two documents using
+// Tf-Idf vectorization using the corpus.
+func (ts *TextSimilarity) Similarity(a, b string) (float64, error) {
+	tokensA := Tokenize(a)
+	tokensB := Tokenize(b)
 	// Populate the vectors using frequency in the corpus.
-	vectorA := make([]float64, len(corpus))
-	vectorB := make([]float64, len(corpus))
-	for k, v := range corpus {
-		vectorA[k] = float64(count(v, tokensA)) / float64(len(vectorA))
-		vectorB[k] = float64(count(v, tokensB)) / float64(len(vectorA))
+	n := len(ts.corpus)
+	vectorA := make([]float64, n)
+	vectorB := make([]float64, n)
+	for k, v := range ts.corpus {
+		vectorA[k] = tfidf(v, tokensA, n, ts.documentFrequency)
+		vectorB[k] = tfidf(v, tokensB, n, ts.documentFrequency)
 	}
 
 	similarity, err := Cosine(vectorA, vectorB)

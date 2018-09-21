@@ -1,10 +1,12 @@
-# Text Similarity
+package main
 
-A package that provides similarity between two string documents
-using cosine similarity and tf-idf.
+import (
+	"fmt"
 
-## Usage 
-```go
+	"github.com/rhnvrm/textsimilarity"
+)
+
+func main() {
 	docs := []string{
 		"Samsung Galaxy Tab A 10.5 review: Slate will impress multimedia enthusiasts",
 		"Why banks are upgrading your debit, credit cards",
@@ -27,4 +29,4 @@ using cosine similarity and tf-idf.
 	result, _ := ts.Similarity(docA, docB)
 
 	fmt.Println(result)
-```
+}
