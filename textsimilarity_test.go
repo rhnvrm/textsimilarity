@@ -62,7 +62,7 @@ func TestTokenize(t *testing.T) {
 		{
 			name: "Test1",
 			args: args{
-				s: "Hello to the World",
+				s: "Hello to the World 123",
 			},
 			want: []string{"hello", "world"},
 		},

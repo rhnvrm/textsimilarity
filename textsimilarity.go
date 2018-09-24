@@ -3,7 +3,8 @@ package textsimilarity
 import (
 	"errors"
 	"math"
-	"strings"
+
+	tokenize "github.com/AlasdairF/Tokenize"
 )
 
 var ()
@@ -45,12 +46,22 @@ func Cosine(a, b []float64) (float64, error) {
 	return sumA / (math.Sqrt(s1) * math.Sqrt(s2)), nil
 }
 
-// Tokenize uses Naive splitting along with our custom stopword
-// filtering to return a list of tokens.
+// Tokenize splits the string into tokens and filters based on
+// our custom stopword list.
 func Tokenize(s string) []string {
 	// Iterate over the doc's tokens:
 	tokens := []string{}
-	for _, tok := range strings.Split(strings.ToLower(s), " ") {
+	result := []string{}
+
+	wordfn := func(word []byte) {
+		tokens = append(tokens, string(word)) // using my Unleak package to make a copy of the slice
+	}
+
+	lowercase, stripAccents, stripContractions, stripNumbers, stripForeign := true, true, true, true, true
+	tokenize.AllInOne([]byte(s), wordfn, lowercase, stripAccents, stripContractions, stripNumbers, stripForeign)
+
+	// Filter Tokens using stopwords list
+	for _, tok := range tokens {
 		var exclude = false
 		for _, v := range stopbytes {
 			if string(v) == tok {
@@ -58,10 +69,10 @@ func Tokenize(s string) []string {
 			}
 		}
 		if exclude == false {
-			tokens = append(tokens, tok)
+			result = append(result, tok)
 		}
 	}
-	return tokens
+	return result
 }
 
 func count(key string, a []string) int {
