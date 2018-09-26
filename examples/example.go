@@ -28,5 +28,8 @@ func main() {
 	docB := "Global gold prices edge up as easing trade concerns hurt dollar"
 	result, _ := ts.Similarity(docA, docB)
 
+	keywords := ts.Keywords(0.2, 0.5)
+
 	fmt.Println(result)
+	fmt.Println(keywords)
 }
