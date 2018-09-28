@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var test_corpus = []string{
+var testCorpus = []string{
 	`berkshire hathaway investment boosts paytm’s valuation by 20% | the smarter way to get your business news - subscribe to bloombergquint on whatsappthe valuation of paytm’s parent one97 communication ltd. jumped 20 percent after it raised funds from billionaire investor warren buffett’s berkshire hathaway inc.paytm is valued at $10 billion (rs 70,634 crore) after the deal in which berkshire hathaway infused $300 million (rs 2,103 crore), documents filed by the registrar of companies and calculations by bloombergquint showed. berkshire hathaway’s arm bh international holdings bought 1,702,713 shares at$176.18 (rs 12,352.6) apiece, the value as of aug. 28 when the board approved the infusion.in may, one97 shares were worth rs 10,560 apiece, according to the filings, valuing the company at $8.34 billion (rs 58,586 crore).the investment gives berkshire hathaway a 2.9 percent stake in the company, whichcounts alibaba group as its largest shareholder with 38.4 percent stake, followed by softbank group corp and saif partners that hold close to 20 percent each.one97, which started in 2010 as a mobile recharge services provider, created a host of payment solutions such as a digital wallet—and the paytm payments bank is now india’s second most-valuable startup after flipkart.. read more on technology by bloombergquint.`,
 	`next lifts profit guidance, plays down brexit threat | clothing retailer next raised its profit guidance after better-than-expected trading in late summer and said it was well prepared should britain crash out of the eu without a deal, sending its shares higher.`,
 	`gold prices surge today, silver follows | gold prices jump by rs 175 to rs 31,725 per 10 gram, supported by positive global cues and continued buying by local jewellers`,
@@ -154,7 +154,7 @@ var test_corpus = []string{
 
 func TestSimilarity(t *testing.T) {
 
-	ts := New(test_corpus)
+	ts := New(testCorpus)
 
 	t.Run("similarity", func(t *testing.T) {
 		cases := []struct {
@@ -186,22 +186,20 @@ func TestSimilarity(t *testing.T) {
 
 func TestKeywords(t *testing.T) {
 
-	ts := New(test_corpus)
+	ts := New(testCorpus)
 
 	t.Run("keyword", func(t *testing.T) {
 		cases := []struct {
 			thresh []float64
-			result []string
 		}{
 			{
 				thresh: []float64{0.2, 0.5},
-				result: []string{"todo"},
 			},
 		}
 
 		for _, tc := range cases {
 			result := ts.Keywords(tc.thresh[0], tc.thresh[1])
-			if len(result) != 0 {
+			if len(result) == 0 {
 				t.Errorf("Keywords(%v %v) did not return result, got %v", tc.thresh[0], tc.thresh[1], result)
 			}
 		}
@@ -213,7 +211,7 @@ func TestKeywords(t *testing.T) {
 func TestTokenize(t *testing.T) {
 	type args struct {
 		s   string
-		opt TextSimilarityOption
+		opt Option
 	}
 	tests := []struct {
 		name string
@@ -252,12 +250,12 @@ func TestTokenize(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.args.opt != nil {
-				ts := New(test_corpus, tt.args.opt)
+				ts := New(testCorpus, tt.args.opt)
 				if got := ts.Tokenize(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 					t.Errorf("Tokenize() = %v, want %v", got, tt.want)
 				}
 			} else {
-				ts := New(test_corpus)
+				ts := New(testCorpus)
 				if got := ts.Tokenize(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 					t.Errorf("Tokenize() = %v, want %v", got, tt.want)
 				}

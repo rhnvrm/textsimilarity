@@ -13,6 +13,8 @@ type kv struct {
 	Value float64
 }
 
+// TextSimilarity is a struct containing internal
+// data to be re-used by the package.
 type TextSimilarity struct {
 	stopwords         [][]byte
 	corpus            []string
@@ -20,7 +22,11 @@ type TextSimilarity struct {
 	documentFrequency map[string]int
 }
 
-type TextSimilarityOption func(TextSimilarity) TextSimilarity
+// Option type describes functional options that
+// allow modification of the internals of TextSimilarity
+// before initialization. They are optional, and not using them
+// allows you to use the defaults.
+type Option func(TextSimilarity) TextSimilarity
 
 // Cosine returns the Cosine Similarity between two vectors.
 func Cosine(a, b []float64) (float64, error) {
@@ -96,7 +102,7 @@ func minMaxKvSlice(s []kv) (min, max float64) {
 }
 
 func filter(vs []kv, f func(kv) bool) []kv {
-	vsf := make([]kv, 0)
+	var vsf []kv
 	for _, v := range vs {
 		if f(v) {
 			vsf = append(vsf, v)
@@ -107,7 +113,7 @@ func filter(vs []kv, f func(kv) bool) []kv {
 
 // New accepts a slice of documents and
 // creates the internal corpus and document frequency mapping.
-func New(documents []string, options ...TextSimilarityOption) *TextSimilarity {
+func New(documents []string, options ...Option) *TextSimilarity {
 	var (
 		allTokens []string
 	)
@@ -252,11 +258,12 @@ func (ts *TextSimilarity) Keywords(threshLower, threshUpper float64) []string {
 // WithCustomStopwords can be used to replace the stopwords with
 // a custom list of stopwords.
 // eg.
-// ts := New(test_corpus, textsimilarity. WithCustomStopwords([][]byte{
-//		[]byte(`hello`),
-//		[]byte(`world`),
-// })
-func WithCustomStopwords(wordList [][]byte) TextSimilarityOption {
+//
+//    ts := New(test_corpus, textsimilarity. WithCustomStopwords([][]byte{
+//      []byte(`hello`),
+//      []byte(`world`),
+//    })
+func WithCustomStopwords(wordList [][]byte) Option {
 	return func(s TextSimilarity) TextSimilarity {
 		s.stopwords = wordList
 		return s
@@ -266,10 +273,11 @@ func WithCustomStopwords(wordList [][]byte) TextSimilarityOption {
 // WithExtraStopwords can be used to augment stopwords with
 // a custom list of stopwords.
 // eg.
-// ts := New(test_corpus, textsimilarity.WithExtraStopwords([][]byte{
-//   []byte(`hello`),
-// }))
-func WithExtraStopwords(wordList [][]byte) TextSimilarityOption {
+//
+//    ts := New(test_corpus, textsimilarity.WithExtraStopwords([][]byte{
+//      []byte(`hello`),
+//    }))
+func WithExtraStopwords(wordList [][]byte) Option {
 	return func(s TextSimilarity) TextSimilarity {
 		s.stopwords = append(s.stopwords, wordList...)
 		return s
