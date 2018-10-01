@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math"
 	"sort"
+	"strings"
 
 	tokenize "github.com/AlasdairF/Tokenize"
 )
@@ -20,6 +21,9 @@ type TextSimilarity struct {
 	corpus            []string
 	documents         []string
 	documentFrequency map[string]int
+
+	// Configuration Options
+	useBiGrams bool
 }
 
 // Option type describes functional options that
@@ -111,6 +115,16 @@ func filter(vs []kv, f func(kv) bool) []kv {
 	return vsf
 }
 
+func bigrams(g []string) []string {
+	var b []string
+
+	for i := 0; i < len(g)-1; i++ {
+		b = append(b, strings.Join(g[i:i+2], " "))
+	}
+
+	return b
+}
+
 // New accepts a slice of documents and
 // creates the internal corpus and document frequency mapping.
 func New(documents []string, options ...Option) *TextSimilarity {
@@ -119,8 +133,9 @@ func New(documents []string, options ...Option) *TextSimilarity {
 	)
 
 	ts := TextSimilarity{
-		stopwords: stopbytes,
-		documents: documents,
+		stopwords:  stopbytes,
+		documents:  documents,
+		useBiGrams: false,
 	}
 
 	for _, option := range options {
@@ -132,6 +147,7 @@ func New(documents []string, options ...Option) *TextSimilarity {
 	for _, doc := range documents {
 		allTokens = append(allTokens, ts.Tokenize(doc)...)
 	}
+
 	// Generate a corpus.
 	for _, t := range allTokens {
 		if ts.documentFrequency[t] == 0 {
@@ -171,6 +187,11 @@ func (ts *TextSimilarity) Tokenize(s string) []string {
 			result = append(result, tok)
 		}
 	}
+
+	if ts.useBiGrams {
+		result = append(result, bigrams(result)...)
+	}
+
 	return result
 }
 
@@ -280,6 +301,18 @@ func WithCustomStopwords(wordList [][]byte) Option {
 func WithExtraStopwords(wordList [][]byte) Option {
 	return func(s TextSimilarity) TextSimilarity {
 		s.stopwords = append(s.stopwords, wordList...)
+		return s
+	}
+}
+
+// WithBiGrams can be used to augment tokens with
+// bigrams along with 1-grams.
+// eg.
+//
+//    ts := New(test_corpus, textsimilarity.WithBiGrams())
+func WithBiGrams() Option {
+	return func(s TextSimilarity) TextSimilarity {
+		s.useBiGrams = true
 		return s
 	}
 }

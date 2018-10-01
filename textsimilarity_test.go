@@ -246,6 +246,14 @@ func TestTokenize(t *testing.T) {
 			},
 			want: []string{"world"},
 		},
+		{
+			name: "TestWithBiGrams",
+			args: args{
+				s:   "Hello to the World 123 I am testing BiGrams one two three",
+				opt: WithBiGrams(),
+			},
+			want: []string{"hello", "world", "testing", "bigrams", "one", "two", "three", "hello world", "world testing", "testing bigrams", "bigrams one", "one two", "two three"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
