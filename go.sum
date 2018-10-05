@@ -1,0 +1,16 @@
+github.com/AlasdairF/Conv v0.0.0-20170228095014-b55e025a049e h1:/4XUUV6u2t1vvavJ0HY+kLy8a2bew0KJk87CJidRhi8=
+github.com/AlasdairF/Conv v0.0.0-20170228095014-b55e025a049e/go.mod h1:aonr4SH/q3GS4WxGhUQ4DVvaZWvxSdyIVcufpNZATYI=
+github.com/AlasdairF/Custom v0.0.0-20161026102731-1889d7b07a22 h1:wT22wex8TyFhmTK9CuYqJc7H5jJE8MTQBAQeFFYHPi4=
+github.com/AlasdairF/Custom v0.0.0-20161026102731-1889d7b07a22/go.mod h1:qxohxlo5frlPQhXvuXkyBat+GF3Amh0qVypYh6EpA+Q=
+github.com/AlasdairF/Deaccent v0.0.0-20141217170736-6d8bd09110fd h1:Fzf+TgLYpVC35XdIfiakzqfrOjEVI6ecI6P+MfKQWQ4=
+github.com/AlasdairF/Deaccent v0.0.0-20141217170736-6d8bd09110fd/go.mod h1:ASlkyvrWh5FkNHKyWJCYR8AHQ/vPFDExdBF/rRkcEB4=
+github.com/AlasdairF/Tokenize v0.0.0-20151218070831-dc54600920d2 h1:Dhav78uvADNm0PHi5xFQnpfFjQvKxaCWszieBovVHNo=
+github.com/AlasdairF/Tokenize v0.0.0-20151218070831-dc54600920d2/go.mod h1:M9blfk+qS44Lg+bcd9bXjyBaGY1LWRSZTxyHp3BD57M=
+github.com/AlasdairF/snappy v0.0.0-20160114083434-d1c9103b7e94 h1:hluQ6rw381NNBeCafSsLprE2bas7Vq6Nbkd9Ot0f78E=
+github.com/AlasdairF/snappy v0.0.0-20160114083434-d1c9103b7e94/go.mod h1:CcTh3SSpWb4wI01dEe1q8jxDEXyxLLl/SHe2AMl9Phk=
+github.com/klauspost/compress v1.4.0 h1:8nsMz3tWa9SWWPL60G1V6CUsf4lLjWLTNEtibhe8gh8=
+github.com/klauspost/compress v1.4.0/go.mod h1:RyIbtBH6LamlWaDj8nUwkbUhJ87Yi3uG0guNDohfE1A=
+github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e h1:+lIPJOWl+jSiJOc70QXJ07+2eg2Jy2EC7Mi11BWujeM=
+github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e/go.mod h1:Pj4uuM528wm8OyEC2QMXAi2YiTZ96dNQPGgoMS4s3ek=
+golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
+golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
